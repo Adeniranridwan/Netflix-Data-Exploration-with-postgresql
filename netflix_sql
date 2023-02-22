@@ -1,0 +1,289 @@
+SELECT * 
+FROM movie;
+
+/*quantity of Movie and TV Show we have in the dataset*/
+SELECT type, release_year
+FROM movie
+WHERE type = 'Movie'
+ORDER BY release_year DESC;
+
+SELECT type, release_year
+FROM movie
+WHERE type = 'TV Show'
+ORDER BY release_year DESC;
+
+
+/*cast the date_added column as text and update the table for flexibilty */
+
+ALTER TABLE movie
+Add added_date text;
+
+UPDATE movie 
+SET added_date = CAST (date_added AS TEXT)
+
+
+/*query the total number of both movie and tv show added in recent years*/
+SELECT type, added_date
+FROM movie
+WHERE added_date like any (array['%2021%','%2020%','%2019%']);  
+
+/*quary movie, tv show and added_year, release_year respectively*/
+SELECT type, added_date
+FROM movie
+WHERE type = 'Movie' and added_date like '%2021%';  
+
+SELECT type, added_date
+FROM movie
+WHERE type = 'TV Show' and added_date like '%2021%'; 
+
+SELECT type, added_date
+FROM movie
+WHERE type like '%TV Show%' and added_date like '%2020%';  
+
+SELECT type, added_date
+FROM movie
+WHERE type = 'Movie' and added_date like '%2020%'  
+
+SELECT type, added_date
+FROM movie
+WHERE type = 'Movie' AND release_year = 2021;  
+
+SELECT *
+FROM movie
+WHERE type = 'TV Show' AND release_year = 2021;  
+
+SELECT type, release_year
+FROM movie
+WHERE type = 'Movie' AND release_year = 2020;  
+
+SELECT  type, release_year
+FROM movie
+WHERE type = 'TV Show' AND release_year = 2020;
+
+
+/*lets make the rating column more explanantory and take a look at the count*/
+
+SELECT rating,
+CASE rating
+WHEN 'TV-14' THEN 'Not for under 14 Audience'
+WHEN 'PG-13' THEN 'Parents Strongly Cautioned'
+WHEN 'TV-PG' THEN 'Parental Guidance Suggested'
+WHEN 'TV-MA' THEN 'Adults Only'
+WHEN 'TV-G' THEN 'General Audience'
+WHEN 'TV-Y7' THEN 'For children 7 above'
+WHEN 'PG' THEN 'Parental Guidance Suggested'
+WHEN 'TV-Y' THEN 'For children 7 above'
+WHEN 'R' THEN 'Restricted for below 17'
+WHEN 'NR' THEN 'Not rated'
+WHEN 'TV-Y7-FV' THEN 'fantancy violence'
+WHEN 'UR' THEN 'Not rated'
+WHEN 'NC-17' THEN 'Restricted for 17 and age Below'
+WHEN 'G' THEN 'General Audience'
+END rating_description
+FROM movie
+ORDER BY show_id
+
+ALTER TABLE movie
+Add rating_description text;
+
+UPDATE movie 
+SET rating_description = CASE rating
+WHEN 'TV-14' THEN 'Not for under 14 Audience'
+WHEN 'PG-13' THEN 'Parents Strongly Cautioned'
+WHEN 'TV-PG' THEN 'Parental Guidance Suggested'
+WHEN 'TV-MA' THEN 'Adults Only'
+WHEN 'TV-G' THEN 'General Audience'
+WHEN 'TV-Y7' THEN 'For children 7 above'
+WHEN 'PG' THEN 'Parental Guidance Suggested'
+WHEN 'TV-Y' THEN 'For children 7 above'
+WHEN 'R' THEN 'Restricted for below 17'
+WHEN 'NR' THEN 'Not rated'
+WHEN 'TV-Y7-FV' THEN 'fantancy violence'
+WHEN 'UR' THEN 'Not rated'
+WHEN 'NC-17' THEN 'Restricted for 17 and age Below'
+WHEN 'G' THEN 'General Audience'
+END
+
+SELECT rating_description, COUNT(rating_description)
+FROM movie
+GROUP BY rating_description
+HAVING COUNT(rating_description) > 1
+ORDER BY COUNT(rating_description) DESC; 
+
+
+/*The count of the movie/show category according to their appearance*/
+SELECT listed_in, COUNT(listed_in)
+FROM movie
+GROUP BY listed_in
+HAVING COUNT(listed_in) > 200
+ORDER BY COUNT(listed_in) DESC; 
+
+SELECT *
+FROM movie
+WHERE type = 'Movie' AND listed_in like '%Documentaries%' ;
+
+
+/* country with the highest count based on appearance in the dataset */
+SELECT country, COUNT(country)
+FROM movie
+GROUP BY country
+HAVING COUNT(country) > 100
+ORDER BY COUNT(country) DESC; 
+
+/*checkout few countries*/
+SELECT *
+FROM movie
+WHERE Country = 'United States' AND type = 'Movie' AND release_year = 2020
+
+SELECT *
+FROM movie
+WHERE Country = 'United States' AND type = 'TV Show' AND release_year = 2020
+
+SELECT *
+FROM movie
+WHERE Country = 'Nigeria' AND type = 'Movie' AND release_year = 2020
+
+SELECT *
+FROM movie
+WHERE Country = 'Nigeria' AND type = 'TV Show' AND release_year = 2020
+
+
+SELECT *
+FROM movie
+WHERE Country = 'India' AND type = 'Movie' AND release_year = 2020
+
+
+SELECT *
+FROM movie
+WHERE Country = 'India' AND type = 'TV Show' AND release_year = 2020
+
+/*release_year count in descending order*/
+SELECT release_year , COUNT(release_year )
+FROM movie
+GROUP BY release_year 
+HAVING COUNT(release_year ) > 50
+ORDER BY COUNT(release_year ) DESC; 
+/*Country that produce more season film*/
+SELECT *
+FROM movie
+WHERE Country = 'United States' AND duration LIKE '%Seasons%'
+
+
+SELECT *
+FROM movie
+WHERE Country = 'Nigeria' AND duration LIKE '%Seasons%'
+
+SELECT *
+FROM movie
+WHERE Country = 'India' AND duration LIKE '%Seasons%'
+
+SELECT *
+FROM movie
+WHERE Country = 'Canada' AND duration LIKE '%Seasons%'
+
+SELECT *
+FROM movie
+WHERE Country = 'Germany' AND duration LIKE '%Seasons%'
+
+
+/* quantity of Movie and TV Show produced by specific countriea*/
+
+
+SELECT country, count('United States')
+FROM movie
+WHERE Country = 'United States' AND  type = 'Movie' 
+GROUP BY country
+
+
+SELECT *
+FROM movie
+WHERE Country = 'United States' AND  type = 'TV Show' 
+
+
+SELECT *
+FROM movie
+WHERE Country = 'India' AND  type = 'Movie' 
+
+
+SELECT *
+FROM movie
+WHERE Country = 'India' AND  type = 'TV Show' 
+
+SELECT *
+FROM movie
+WHERE Country = 'Canada' AND  type = 'Movie' 
+
+SELECT *
+FROM movie
+WHERE Country = 'Germany' AND  type = 'Movie' 
+
+
+SELECT *
+FROM movie
+WHERE Country = 'Germany' AND  type = 'TV Show' 
+
+
+SELECT *
+FROM movie
+WHERE Country = 'Nigeria' AND  type = 'Movie' 
+
+
+SELECT *
+FROM movie
+WHERE Country = 'Nigeria' AND  type = 'TV Show' 
+
+/*Country that their film are listed in documentary, crime tv ...*/
+
+SELECT country, count('United States')
+FROM movie
+WHERE Country = 'United States' AND listed_in = 'Documentaries' AND release_year = 2020
+GROUP BY country
+
+
+
+/*movie that lasted more than or less than 2 hour */
+
+SELECT show_id, type, country, duration
+FROM movie
+WHERE duration LIKE '%Season%'
+
+SELECT show_id, type, country, duration
+FROM movie
+WHERE duration LIKE '%min%'
+
+
+/*director count*/
+SELECT director, COUNT(director)
+FROM movie
+GROUP BY director
+HAVING COUNT(director) > 10
+ORDER BY COUNT(director) DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
